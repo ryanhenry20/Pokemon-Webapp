@@ -23,4 +23,7 @@ module.exports = withOffline({
 			},
 		],
 	},
+	images: {
+		domains: ['raw.githubusercontent.com'],
+	},
 })
