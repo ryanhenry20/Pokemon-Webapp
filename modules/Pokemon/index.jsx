@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
 import Image from 'next/image'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
@@ -71,8 +71,10 @@ const Pokemon = ({ data, pokemonDetail }) => {
 			<Grid
 				container
 				className={classes.pokemon}
-				spacing={{ xs: 2, md: 3 }}
-				columns={{ xs: 2, sm: 8, md: 12 }}
+				rowSpacing={10}
+				columnSpacing={{ xs: 2, sm: 8, md: 12 }}
+
+				// spacing={{ xs: 2, md: 3 }}
 			>
 				{renderListPokemon(pokemon)}
 			</Grid>
