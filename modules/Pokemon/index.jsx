@@ -1,20 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import InfiniteScroll from 'react-infinite-scroll-component'
 import Grid from '@mui/material/Grid'
 import Image from 'next/image'
-import InfiniteScroll from 'react-infinite-scroll-component'
-
-const useStyles = makeStyles(() => ({
-	pokemon: {
-		justifyContent: 'center',
-		textAlign: 'center',
-	},
-}))
+import PopOver from '../../components/PopOver'
 
 const Pokemon = ({ data, pokemonDetail }) => {
-	const classes = useStyles()
+	// const classes = useStyles()
 	const [result, setResult] = useState(data)
 	const [pokemon, setPokemon] = useState(pokemonDetail)
+	const [anchorEl, setAnchorEl] = useState(null)
 	console.log('Data', data)
 	console.log('pokemonDetail', pokemonDetail)
 
@@ -39,6 +33,14 @@ const Pokemon = ({ data, pokemonDetail }) => {
 
 	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
 
+	const handlePopoverOpen = (event) => {
+		setAnchorEl(event.currentTarget)
+	}
+
+	const handlePopoverClose = () => {
+		setAnchorEl(null)
+	}
+
 	const renderListPokemon = (data) => {
 		return data.map((pokemon, index) => {
 			return (
@@ -50,12 +52,18 @@ const Pokemon = ({ data, pokemonDetail }) => {
 								alt="Picture of the author"
 								width={200}
 								height={200}
+								onMouseEnter={handlePopoverOpen}
+								onMouseLeave={handlePopoverClose}
 							/>
 						</div>
 						<div className="pokemon__name">
 							<p>{pokemon.name}</p>
 						</div>
 					</div>
+					<PopOver
+						anchorEl={anchorEl}
+						handlePopoverClose={handlePopoverClose}
+					/>
 				</Grid>
 			)
 		})
@@ -70,7 +78,10 @@ const Pokemon = ({ data, pokemonDetail }) => {
 		>
 			<Grid
 				container
-				className={classes.pokemon}
+				sx={{
+					justifyContent: 'center',
+					textAlign: 'center',
+				}}
 				rowSpacing={10}
 				columnSpacing={{ xs: 2, sm: 8, md: 12 }}
 

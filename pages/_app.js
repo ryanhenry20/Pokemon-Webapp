@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import './PopOver.css'
 
 const theme = createMuiTheme({
 	palette: {
