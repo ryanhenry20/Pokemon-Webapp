@@ -10,7 +10,7 @@ export default PokemonPage
 export async function getServerSideProps() {
 	try {
 		const resAllPokemon = await fetch(
-			'https://pokeapi.co/api/v2/pokemon/?limit=30&offset=1'
+			'https://pokeapi.co/api/v2/pokemon/?limit=25&offset=1'
 		)
 
 		const allPokemon = await resAllPokemon.json()
