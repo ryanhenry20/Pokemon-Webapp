@@ -1,34 +1,53 @@
-import Fork from '../components/Fork'
-import Todo from '../components/Todo'
-import Pokemon from '../modules/Pokemon'
+import React from 'react'
+import Pokemon from '../modules/Pokemon/index'
 
-export default function Index({ stars }) {
+const Index = ({ allPokemon, allPokemonDetail, typePokemon }) => {
 	return (
-		<main>
-			<Fork stars={stars} />
-			<Todo />
-			{/* <Pokemon /> */}
-		</main>
+		<Pokemon
+			data={allPokemon}
+			pokemonDetail={allPokemonDetail}
+			typePokemon={typePokemon}
+		/>
 	)
 }
 
-// export async function getServerSideProps() {
-// 	try {
-// 		const res = await fetch(
-// 			'https://api.github.com/repos/ooade/NextSimpleStarter'
-// 		)
-// 		const json = await res.json()
+export default Index
 
-// 		return {
-// 			props: {
-// 				stars: json.stargazers_count,
-// 			},
-// 		}
-// 	} catch (error) {
-// 		return {
-// 			props: {
-// 				stars: 0,
-// 			},
-// 		}
-// 	}
-// }
+export async function getServerSideProps() {
+	try {
+		const resAllPokemon = await fetch(
+			'https://pokeapi.co/api/v2/pokemon/?limit=25&offset=0'
+		)
+
+		const allPokemon = await resAllPokemon.json()
+
+		const allPokemonDetail = await Promise.all(
+			allPokemon.results.map(async (allPokemon) => {
+				const resPokemon = await fetch(allPokemon.url)
+				const pokemonData = await resPokemon.json()
+				return pokemonData
+			})
+		)
+
+		const resTypePokemon = await fetch('https://pokeapi.co/api/v2/type')
+		const typePokemon = await resTypePokemon.json()
+
+		console.log('All Pokemon Data', allPokemonDetail)
+
+		console.log('allPokemon', allPokemon)
+
+		return {
+			props: {
+				allPokemon,
+				allPokemonDetail,
+				typePokemon: typePokemon.results,
+			},
+		}
+	} catch (error) {
+		return {
+			props: {
+				data: [],
+			},
+		}
+	}
+}

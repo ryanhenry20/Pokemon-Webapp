@@ -1,5 +1,5 @@
 import React from 'react'
-import Pokemon from '../modules/Pokemon'
+import Pokemon from '../modules/Pokemon/index'
 
 const PokemonPage = ({ allPokemon, allPokemonDetail, typePokemon }) => {
 	return (
