@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import Image from 'next/image'
+import _ from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -14,10 +14,10 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	const [anchorEl, setAnchorEl] = useState(null)
 	// console.log('Data', data)
 	// console.log('pokemonDetail', pokemonDetail)
-	console.log('typePokemon', typePokemon)
+	// console.log('typePokemon', typePokemon)
 
 	const fetchPokemon = async () => {
-		console.log('next', data && data.next)
+		// console.log('next', data && data.next)
 
 		setTimeout(async () => {
 			const res = await fetch(result.next)
@@ -27,6 +27,7 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 				dataPokemon.results.map(async (pokemon) => {
 					const res = await fetch(pokemon.url)
 					const pokemonData = await res.json()
+					console.log('thor', pokemonData)
 					setPokemon((pokemon) => [...pokemon, pokemonData])
 					return pokemonData
 				})
@@ -35,7 +36,27 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 		}, 1000)
 	}
 
-	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
+	const fetchPokemonMemo = useMemo(() => fetchPokemon, [typePokemon])
+
+	const fetchPokemonByType = async (type) => {
+		let arr = []
+		const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
+		const data = await res.json()
+		const pokemonDetail = await Promise.all(
+			data.pokemon.map(async (pokemon) => {
+				const res = await fetch(pokemon.pokemon.url)
+				const pokemonData = await res.json()
+
+				return pokemonData
+			})
+		)
+
+		setPokemon(pokemonDetail)
+
+		return pokemonDetail
+	}
+
+	const fetchPokemonByTypeMemo = useMemo(() => fetchPokemonByType, [pokemon])
 
 	const renderButtonFilter = useCallback(() => {
 		return typePokemon.map((type) => {
@@ -57,6 +78,21 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 		})
 	}, [typePokemon])
 
+	const renderButtonFilterFromAPI = () => {
+		return typePokemon.map((type) => {
+			return (
+				<Button
+					key={type.name}
+					onClick={async () => {
+						const resp = await fetchPokemonByTypeMemo(type.name)
+					}}
+				>
+					{type.name}
+				</Button>
+			)
+		})
+	}
+
 	const handlePopoverOpen = (event, pokemon) => {
 		setAnchorEl(event.currentTarget)
 		setHoverPokemon(pokemon)
@@ -67,28 +103,37 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	}
 
 	const renderListPokemon = (data) => {
-		return data.map((pokemon, index) => {
-			return (
-				<Grid item xs={8} sm={3} key={index}>
-					<div className="pokemon">
-						<div className="pokemon__image">
-							<Image
-								src={pokemon.sprites.other.dream_world.front_default}
-								alt="Picture of the author"
-								width={200}
-								height={200}
-								// onClick={handlePopoverOpen}
-								onMouseEnter={(event) => handlePopoverOpen(event, pokemon)}
-								onMouseLeave={handlePopoverClose}
-							/>
+		return (
+			data &&
+			data.map((pokemon, index) => {
+				const imagesPokemon = _.get(
+					pokemon,
+					'sprites.other.dream_world.front_default',
+					'/images/pokemon.png'
+				)
+
+				return (
+					<Grid item xs={8} sm={3} key={index}>
+						<div className="pokemon">
+							<div className="pokemon__image">
+								<img
+									src={imagesPokemon}
+									alt={`${pokemon.name}-image`}
+									width={200}
+									height={200}
+									// onClick={handlePopoverOpen}
+									onMouseEnter={(event) => handlePopoverOpen(event, pokemon)}
+									onMouseLeave={handlePopoverClose}
+								/>
+							</div>
+							<div className="pokemon__name">
+								<p>{pokemon.name}</p>
+							</div>
 						</div>
-						<div className="pokemon__name">
-							<p>{pokemon.name}</p>
-						</div>
-					</div>
-				</Grid>
-			)
-		})
+					</Grid>
+				)
+			})
+		)
 	}
 
 	return (
@@ -116,8 +161,9 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 						marginBottom: '36px',
 					}}
 				>
-					<Typography>Filter</Typography>
-					{renderButtonFilter()}
+					<Typography variant="h4">Filter</Typography>
+					{/* {renderButtonFilter()} */}
+					{renderButtonFilterFromAPI()}
 					<Button onClick={() => setPokemon(pokemonDetail)}>Reset</Button>
 				</div>
 			</Grid>
