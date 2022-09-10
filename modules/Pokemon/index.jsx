@@ -8,9 +8,10 @@ const Pokemon = ({ data, pokemonDetail }) => {
 	// const classes = useStyles()
 	const [result, setResult] = useState(data)
 	const [pokemon, setPokemon] = useState(pokemonDetail)
+	const [hoverPokemon, setHoverPokemon] = useState(null)
 	const [anchorEl, setAnchorEl] = useState(null)
-	console.log('Data', data)
-	console.log('pokemonDetail', pokemonDetail)
+	// console.log('Data', data)
+	// console.log('pokemonDetail', pokemonDetail)
 
 	const fetchPokemon = async () => {
 		console.log('next', data && data.next)
@@ -33,8 +34,9 @@ const Pokemon = ({ data, pokemonDetail }) => {
 
 	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
 
-	const handlePopoverOpen = (event) => {
+	const handlePopoverOpen = (event, pokemon) => {
 		setAnchorEl(event.currentTarget)
+		setHoverPokemon(pokemon)
 	}
 
 	const handlePopoverClose = () => {
@@ -52,7 +54,8 @@ const Pokemon = ({ data, pokemonDetail }) => {
 								alt="Picture of the author"
 								width={200}
 								height={200}
-								onMouseEnter={handlePopoverOpen}
+								// onClick={handlePopoverOpen}
+								onMouseEnter={(event) => handlePopoverOpen(event, pokemon)}
 								onMouseLeave={handlePopoverClose}
 							/>
 						</div>
@@ -60,36 +63,35 @@ const Pokemon = ({ data, pokemonDetail }) => {
 							<p>{pokemon.name}</p>
 						</div>
 					</div>
-					<PopOver
-						anchorEl={anchorEl}
-						handlePopoverClose={handlePopoverClose}
-					/>
 				</Grid>
 			)
 		})
 	}
 
 	return (
-		<InfiniteScroll
-			dataLength={pokemon.length}
-			next={fetchPokemonMemo}
-			hasMore={true}
-			loader={<h4>Loading...</h4>}
-		>
-			<Grid
-				container
-				sx={{
-					justifyContent: 'center',
-					textAlign: 'center',
-				}}
-				rowSpacing={10}
-				columnSpacing={{ xs: 2, sm: 8, md: 12 }}
-
-				// spacing={{ xs: 2, md: 3 }}
+		<>
+			<InfiniteScroll
+				dataLength={pokemon.length}
+				next={fetchPokemonMemo}
+				hasMore={true}
+				loader={<h4>Loading...</h4>}
 			>
-				{renderListPokemon(pokemon)}
-			</Grid>
-		</InfiniteScroll>
+				<Grid
+					container
+					sx={{
+						justifyContent: 'center',
+						textAlign: 'center',
+					}}
+					rowSpacing={10}
+					columnSpacing={{ xs: 2, sm: 8, md: 12 }}
+
+					// spacing={{ xs: 2, md: 3 }}
+				>
+					{renderListPokemon(pokemon)}
+				</Grid>
+				<PopOver anchorEl={anchorEl} hoverPokemon={hoverPokemon} />
+			</InfiniteScroll>
+		</>
 	)
 }
 

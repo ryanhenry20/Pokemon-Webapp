@@ -19,11 +19,6 @@ const theme = createMuiTheme({
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
-		if (process.env.NODE_ENV !== 'production') {
-			const axe = require('react-axe')
-			axe(React, ReactDOM, 1000)
-		}
-
 		// Remove the server-side injected CSS.
 		const jssStyles = document.querySelector('#jss-server-side')
 		if (jssStyles) {
