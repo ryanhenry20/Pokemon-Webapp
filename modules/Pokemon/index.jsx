@@ -17,7 +17,7 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	// console.log('typePokemon', typePokemon)
 
 	const fetchPokemon = async () => {
-		// console.log('next', data && data.next)
+		console.log('next', data && data.next)
 
 		setTimeout(async () => {
 			const res = await fetch(result.next)
@@ -27,7 +27,6 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 				dataPokemon.results.map(async (pokemon) => {
 					const res = await fetch(pokemon.url)
 					const pokemonData = await res.json()
-					console.log('thor', pokemonData)
 					setPokemon((pokemon) => [...pokemon, pokemonData])
 					return pokemonData
 				})
@@ -36,7 +35,7 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 		}, 1000)
 	}
 
-	const fetchPokemonMemo = useMemo(() => fetchPokemon, [typePokemon])
+	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
 
 	const fetchPokemonByType = async (type) => {
 		let arr = []
