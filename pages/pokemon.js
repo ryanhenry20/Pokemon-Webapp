@@ -1,8 +1,14 @@
 import React from 'react'
 import Pokemon from '../modules/Pokemon'
 
-const PokemonPage = ({ allPokemon, allPokemonDetail }) => {
-	return <Pokemon data={allPokemon} pokemonDetail={allPokemonDetail} />
+const PokemonPage = ({ allPokemon, allPokemonDetail, typePokemon }) => {
+	return (
+		<Pokemon
+			data={allPokemon}
+			pokemonDetail={allPokemonDetail}
+			typePokemon={typePokemon}
+		/>
+	)
 }
 
 export default PokemonPage
@@ -10,7 +16,7 @@ export default PokemonPage
 export async function getServerSideProps() {
 	try {
 		const resAllPokemon = await fetch(
-			'https://pokeapi.co/api/v2/pokemon/?limit=25&offset=1'
+			'https://pokeapi.co/api/v2/pokemon/?limit=25&offset=0'
 		)
 
 		const allPokemon = await resAllPokemon.json()
@@ -23,6 +29,9 @@ export async function getServerSideProps() {
 			})
 		)
 
+		const resTypePokemon = await fetch('https://pokeapi.co/api/v2/type')
+		const typePokemon = await resTypePokemon.json()
+
 		console.log('All Pokemon Data', allPokemonDetail)
 
 		console.log('allPokemon', allPokemon)
@@ -31,6 +40,7 @@ export async function getServerSideProps() {
 			props: {
 				allPokemon,
 				allPokemonDetail,
+				typePokemon: typePokemon.results,
 			},
 		}
 	} catch (error) {

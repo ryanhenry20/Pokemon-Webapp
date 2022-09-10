@@ -20,7 +20,7 @@ const PopOver = ({ anchorEl, hoverPokemon }) => {
 		return (
 			<div
 				style={{
-					padding: 10,
+					padding: 16,
 				}}
 			>
 				<Typography>Name: {hoverPokemon && hoverPokemon.name}</Typography>

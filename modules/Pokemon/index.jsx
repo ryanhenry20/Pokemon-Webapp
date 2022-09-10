@@ -2,10 +2,11 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Image from 'next/image'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import PopOver from '../../components/PopOver'
 
-const Pokemon = ({ data, pokemonDetail }) => {
+const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	// const classes = useStyles()
 	const [result, setResult] = useState(data)
 	const [pokemon, setPokemon] = useState(pokemonDetail)
@@ -13,6 +14,7 @@ const Pokemon = ({ data, pokemonDetail }) => {
 	const [anchorEl, setAnchorEl] = useState(null)
 	// console.log('Data', data)
 	// console.log('pokemonDetail', pokemonDetail)
+	console.log('typePokemon', typePokemon)
 
 	const fetchPokemon = async () => {
 		console.log('next', data && data.next)
@@ -34,6 +36,26 @@ const Pokemon = ({ data, pokemonDetail }) => {
 	}
 
 	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
+
+	const renderButtonFilter = useCallback(() => {
+		return typePokemon.map((type) => {
+			return (
+				<Button
+					key={type.name}
+					onClick={() => {
+						const filterPokemon = pokemon.filter((pokemon) => {
+							return pokemon.types.find((typePokemon) => {
+								return typePokemon.type.name === type.name
+							})
+						})
+						setPokemon(filterPokemon)
+					}}
+				>
+					{type.name}
+				</Button>
+			)
+		})
+	}, [typePokemon])
 
 	const handlePopoverOpen = (event, pokemon) => {
 		setAnchorEl(event.currentTarget)
@@ -79,7 +101,7 @@ const Pokemon = ({ data, pokemonDetail }) => {
 				textAlign: 'center',
 			}}
 		>
-			<Grid item>
+			<Grid item xs={12} sm={12} md={12}>
 				<Typography
 					variant="h1"
 					sx={{
@@ -89,7 +111,15 @@ const Pokemon = ({ data, pokemonDetail }) => {
 				>
 					Pokemon List
 				</Typography>
-				<Typography>Filter</Typography>
+				<div
+					style={{
+						marginBottom: '36px',
+					}}
+				>
+					<Typography>Filter</Typography>
+					{renderButtonFilter()}
+					<Button onClick={() => setPokemon(pokemonDetail)}>Reset</Button>
+				</div>
 			</Grid>
 			<div>
 				<InfiniteScroll
