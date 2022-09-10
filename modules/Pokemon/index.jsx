@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import Image from 'next/image'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Grid from '@mui/material/Grid'
-import Image from 'next/image'
+import Typography from '@mui/material/Typography'
 import PopOver from '../../components/PopOver'
 
 const Pokemon = ({ data, pokemonDetail }) => {
@@ -69,29 +70,51 @@ const Pokemon = ({ data, pokemonDetail }) => {
 	}
 
 	return (
-		<>
-			<InfiniteScroll
-				dataLength={pokemon.length}
-				next={fetchPokemonMemo}
-				hasMore={true}
-				loader={<h4>Loading...</h4>}
-			>
-				<Grid
-					container
+		<Grid
+			container
+			rowSpacing={10}
+			sx={{
+				padding: '24px',
+				justifyContent: 'center',
+				textAlign: 'center',
+			}}
+		>
+			<Grid item>
+				<Typography
+					variant="h1"
 					sx={{
-						justifyContent: 'center',
-						textAlign: 'center',
+						fontWeight: 'bold',
+						marginBottom: '48px',
 					}}
-					rowSpacing={10}
-					columnSpacing={{ xs: 2, sm: 8, md: 12 }}
-
-					// spacing={{ xs: 2, md: 3 }}
 				>
-					{renderListPokemon(pokemon)}
-				</Grid>
-				<PopOver anchorEl={anchorEl} hoverPokemon={hoverPokemon} />
-			</InfiniteScroll>
-		</>
+					Pokemon List
+				</Typography>
+				<Typography>Filter</Typography>
+			</Grid>
+			<div>
+				<InfiniteScroll
+					dataLength={pokemon.length}
+					next={fetchPokemonMemo}
+					hasMore={true}
+					loader={<h4>Loading...</h4>}
+				>
+					<Grid
+						container
+						sx={{
+							justifyContent: 'center',
+							textAlign: 'center',
+						}}
+						rowSpacing={10}
+						columnSpacing={{ xs: 2, sm: 8, md: 12 }}
+
+						// spacing={{ xs: 2, md: 3 }}
+					>
+						{renderListPokemon(pokemon)}
+					</Grid>
+					<PopOver anchorEl={anchorEl} hoverPokemon={hoverPokemon} />
+				</InfiniteScroll>
+			</div>
+		</Grid>
 	)
 }
 
