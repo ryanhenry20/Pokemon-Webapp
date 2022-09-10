@@ -1,6 +1,5 @@
 import Fork from '../components/Fork'
 import Todo from '../components/Todo'
-import Pokemon from '../modules/Pokemon'
 
 export default function Index({ stars }) {
 	return (
