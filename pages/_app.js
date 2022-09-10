@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import './PopOver.css'
 
 const theme = createMuiTheme({
 	palette: {
@@ -18,11 +19,6 @@ const theme = createMuiTheme({
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
-		if (process.env.NODE_ENV !== 'production') {
-			const axe = require('react-axe')
-			axe(React, ReactDOM, 1000)
-		}
-
 		// Remove the server-side injected CSS.
 		const jssStyles = document.querySelector('#jss-server-side')
 		if (jssStyles) {
@@ -33,7 +29,7 @@ const MyApp = ({ Component, pageProps }) => {
 	return (
 		<>
 			<Head>
-				<title>Todo App</title>
+				<title>Pokemon App</title>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			</Head>
 			<ThemeProvider theme={theme}>
