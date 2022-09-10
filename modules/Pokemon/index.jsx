@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import PopOver from './PopOver'
+import PopOver from '../components/Popover'
 
 const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	// const classes = useStyles()
