@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import _ from 'lodash'
-import Popover from '@mui/material/Popover'
-import Typography from '@mui/material/Typography'
+import React, { useState } from 'react';
+import _ from 'lodash';
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
 
 const PopOver = ({ anchorEl, hoverPokemon }) => {
-	const open = Boolean(anchorEl)
+	const open = Boolean(anchorEl);
 
 	// console.log('hoverPokemon', hoverPokemon)
 
@@ -15,8 +15,8 @@ const PopOver = ({ anchorEl, hoverPokemon }) => {
 			return `${type.slot === 1 ? type.type.name : ''}${
 				type.slot === 2 ? `,${type.type.name}` : ''
 			}
-			 `
-		})
+			 `;
+		});
 		return (
 			<div
 				style={{
@@ -31,8 +31,8 @@ const PopOver = ({ anchorEl, hoverPokemon }) => {
 				<Typography>Height: {hoverPokemon && hoverPokemon.height}</Typography>
 				<Typography>Weight: {hoverPokemon && hoverPokemon.weight}</Typography>
 			</div>
-		)
-	}
+		);
+	};
 
 	return (
 		<div>
@@ -57,7 +57,7 @@ const PopOver = ({ anchorEl, hoverPokemon }) => {
 				{renderPokemonInformation(hoverPokemon)}
 			</Popover>
 		</div>
-	)
-}
+	);
+};
 
-export default PopOver
+export default PopOver;
