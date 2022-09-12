@@ -1,61 +1,63 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
-import _ from 'lodash'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import PopOver from '../../components/Popover'
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import _ from 'lodash';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import PopOver from '../../components/Popover';
+import ModalComponent from '../../components/Modal';
 
 const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 	// const classes = useStyles()
-	const [result, setResult] = useState(data)
-	const [pokemon, setPokemon] = useState(pokemonDetail)
-	const [hoverPokemon, setHoverPokemon] = useState(null)
-	const [anchorEl, setAnchorEl] = useState(null)
+	const [result, setResult] = useState(data);
+	const [pokemon, setPokemon] = useState(pokemonDetail);
+	const [hoverPokemon, setHoverPokemon] = useState(null);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	// console.log('Data', data)
 	// console.log('pokemonDetail', pokemonDetail)
 	// console.log('typePokemon', typePokemon)
 
 	const fetchPokemon = async () => {
-		console.log('next', data && data.next)
+		console.log('next', data && data.next);
 
 		setTimeout(async () => {
-			const res = await fetch(result.next)
-			const dataPokemon = await res.json()
-			setResult(dataPokemon)
+			const res = await fetch(result.next);
+			const dataPokemon = await res.json();
+			setResult(dataPokemon);
 			const pokemonDetail = await Promise.all(
 				dataPokemon.results.map(async (pokemon) => {
-					const res = await fetch(pokemon.url)
-					const pokemonData = await res.json()
-					setPokemon((pokemon) => [...pokemon, pokemonData])
-					return pokemonData
+					const res = await fetch(pokemon.url);
+					const pokemonData = await res.json();
+					setPokemon((pokemon) => [...pokemon, pokemonData]);
+					return pokemonData;
 				})
-			)
-			return pokemonDetail
-		}, 1000)
-	}
+			);
+			return pokemonDetail;
+		}, 1000);
+	};
 
-	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon])
+	const fetchPokemonMemo = useMemo(() => fetchPokemon, [pokemon]);
 
 	const fetchPokemonByType = async (type) => {
-		let arr = []
-		const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-		const data = await res.json()
+		let arr = [];
+		const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+		const data = await res.json();
 		const pokemonDetail = await Promise.all(
 			data.pokemon.map(async (pokemon) => {
-				const res = await fetch(pokemon.pokemon.url)
-				const pokemonData = await res.json()
+				const res = await fetch(pokemon.pokemon.url);
+				const pokemonData = await res.json();
 
-				return pokemonData
+				return pokemonData;
 			})
-		)
+		);
 
-		setPokemon(pokemonDetail)
+		setPokemon(pokemonDetail);
 
-		return pokemonDetail
-	}
+		return pokemonDetail;
+	};
 
-	const fetchPokemonByTypeMemo = useMemo(() => fetchPokemonByType, [pokemon])
+	const fetchPokemonByTypeMemo = useMemo(() => fetchPokemonByType, [pokemon]);
 
 	const renderButtonFilter = useCallback(() => {
 		return typePokemon.map((type) => {
@@ -65,17 +67,17 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 					onClick={() => {
 						const filterPokemon = pokemon.filter((pokemon) => {
 							return pokemon.types.find((typePokemon) => {
-								return typePokemon.type.name === type.name
-							})
-						})
-						setPokemon(filterPokemon)
+								return typePokemon.type.name === type.name;
+							});
+						});
+						setPokemon(filterPokemon);
 					}}
 				>
 					{type.name}
 				</Button>
-			)
-		})
-	}, [typePokemon])
+			);
+		});
+	}, [typePokemon]);
 
 	const renderButtonFilterFromAPI = () => {
 		return typePokemon.map((type) => {
@@ -83,23 +85,33 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 				<Button
 					key={type.name}
 					onClick={async () => {
-						const resp = await fetchPokemonByTypeMemo(type.name)
+						const resp = await fetchPokemonByTypeMemo(type.name);
 					}}
 				>
 					{type.name}
 				</Button>
-			)
-		})
-	}
+			);
+		});
+	};
 
 	const handlePopoverOpen = (event, pokemon) => {
-		setAnchorEl(event.currentTarget)
-		setHoverPokemon(pokemon)
-	}
+		setAnchorEl(event.currentTarget);
+		setHoverPokemon(pokemon);
+	};
 
 	const handlePopoverClose = () => {
-		setAnchorEl(null)
-	}
+		setAnchorEl(null);
+	};
+
+	const handleModalOpen = () => {
+		console.log('open modal');
+		setIsModalOpen(true);
+	};
+
+	const handleModalClose = () => {
+		console.log('close modal');
+		setIsModalOpen(false);
+	};
 
 	const renderListPokemon = (data) => {
 		return (
@@ -109,7 +121,7 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 					pokemon,
 					'sprites.other.dream_world.front_default',
 					'/images/pokemon.png'
-				)
+				);
 
 				return (
 					<Grid item xs={8} sm={3} key={index}>
@@ -120,6 +132,7 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 									alt={`${pokemon.name}-image`}
 									width={200}
 									height={200}
+									onClick={handleModalOpen}
 									// onClick={handlePopoverOpen}
 									onMouseEnter={(event) => handlePopoverOpen(event, pokemon)}
 									onMouseLeave={handlePopoverClose}
@@ -130,10 +143,10 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 							</div>
 						</div>
 					</Grid>
-				)
+				);
 			})
-		)
-	}
+		);
+	};
 
 	return (
 		<Grid
@@ -151,9 +164,10 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 					sx={{
 						fontWeight: 'bold',
 						marginBottom: '48px',
+						color: '#E6B922',
 					}}
 				>
-					Pokemon List
+					Pokedex App
 				</Typography>
 				<div
 					style={{
@@ -189,8 +203,13 @@ const Pokemon = ({ data, pokemonDetail, typePokemon }) => {
 					<PopOver anchorEl={anchorEl} hoverPokemon={hoverPokemon} />
 				</InfiniteScroll>
 			</div>
+			<ModalComponent
+				isModalOpen={isModalOpen}
+				pokemonInfo={hoverPokemon}
+				handleModalClose={handleModalClose}
+			/>
 		</Grid>
-	)
-}
+	);
+};
 
-export default Pokemon
+export default Pokemon;
